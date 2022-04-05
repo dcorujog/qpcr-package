@@ -1,10 +1,11 @@
-#' Fix names output from chainy
+#' Fix names
 #'
-#' @usage fix_names(x)
+#' Remove well position, dots and asterisk symbols from sample names of chainy output files
 #'
-#' @param x
+#' @param x A character vector of sample names
 #'
-
+#' @return A character vector of fixed sample names
+#'
 fix_names <- function(x) { # fix names from chainy output (remove plate well coordinates)
   name <- as.character(x)
   index <- unlist(gregexpr("..", x, fixed = T)) + 2
