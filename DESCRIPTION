@@ -1,9 +1,9 @@
 Package: qpcrpackage
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Analysis of qPCR data with the delta Ct method
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
+Author: David Corujo
+Maintainer: David Corujo <dcorujo@carrerasresearch.org>
 Description: More about what it does (maybe more than one line)
     Use four spaces when indenting paragraphs within the Description.
 License: What license is it under?
