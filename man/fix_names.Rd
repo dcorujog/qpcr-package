@@ -2,13 +2,16 @@
 % Please edit documentation in R/fix_names.R
 \name{fix_names}
 \alias{fix_names}
-\title{Fix names output from chainy}
+\title{Fix names}
 \usage{
 fix_names(x)
 }
 \arguments{
-\item{x}{}
+\item{x}{A character vector of sample names}
+}
+\value{
+A character vector of fixed sample names
 }
 \description{
-Fix names output from chainy
+Remove well position, dots and asterisk symbols from sample names of chainy output files
 }
