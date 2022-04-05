@@ -1,3 +1,13 @@
+#' Average Cts of technical replicates
+#'
+#' Calculate the average Ct and standard deviation of technical replicates (rows with the same sample name are considered technical replicates).
+#'
+#' @param ct_data a data frame with the qPCR input data. It needs to have the following columns: names, cq, efficiency, primers, included.
+#'
+#' @return a data frame with averaged Ct and standard deviation values for technical replicates.
+#' @export
+#'
+#' @examples
 ct_avg_fun <- function(ct_data) {
   ct_avg <- data.frame()
   for (sample in unique(ct_data$sample)) {
