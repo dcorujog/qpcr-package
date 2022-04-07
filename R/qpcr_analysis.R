@@ -52,14 +52,10 @@ qpcr_analysis <- function( # MAIN FUNCTION
 
   eff <- aggregate(ct_avg$effaverage, by = ct_avg["primers"], FUN = median, na.rm = T)
   names(eff)[2] <- "efficiency"
-  print(eff)
   ct <- aggregate(ct_data$cq, by = ct_data["primers"], FUN = mean, na.rm = T)
   names(ct)[2] <- "cq"
-  save(eff, file =  paste0(exp_name, "_eff.RData"))
   write.csv(eff, paste0(exp_name, "_eff.csv"))
-  save(ct, file = paste0(exp_name, "_ct.RData"))
   write.csv(ct, paste0(exp_name, "_ct.csv"))
-
 
   if (type == "rtqpcr") {
 
