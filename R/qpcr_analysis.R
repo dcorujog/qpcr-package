@@ -54,7 +54,6 @@ qpcr_analysis <- function( # MAIN FUNCTION
 
   eff <- aggregate(ct_avg$effaverage, by = ct_avg["primers"], FUN = median, na.rm = T)
   names(eff)[2] <- "efficiency"
-  write.csv(eff, paste0(exp_name, "_eff.csv"))
 
   if (type == "rtqpcr") {
 
@@ -73,6 +72,7 @@ qpcr_analysis <- function( # MAIN FUNCTION
 
     if(save_csv) {
       write.csv(norm_data, file = paste0(exp_name, "_norm_data.csv"))
+      write.csv(eff, paste0(exp_name, "_eff.csv"))
     }
 
     # Create QC plots
