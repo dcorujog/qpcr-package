@@ -8,7 +8,7 @@
 #' @import ggplot2
 #' @import viridis
 #'
-#' @return
+#' @return a pdf file is saved with the corresponding plot
 #' @export
 #'
 #' @examples
