@@ -13,6 +13,7 @@
 #' @param exclude logical indicating whether the logical column "exclude" from the input should be used to filter the data frame (default = FALSE).
 #' @param save_csv logical indicating whether to save the final analyzed data frame as a csv file.
 #' @param qc_plots logical indicating whether to generate and save QC plots.
+#' @param out_dir directory for saving all results and plots (default = working directory)
 #'
 #' @return a data frame with the analyzed qPCR data containing normalized dct values.
 #' @export
@@ -27,7 +28,8 @@ qpcr_analysis <- function( # MAIN FUNCTION
   fix_names = FALSE,
   exclude = FALSE,
   save_csv = TRUE,
-  qc_plots = TRUE
+  qc_plots = TRUE,
+  out_dir = getwd()
 ) {
 
   # Fix names if ncessary (chainy output), otherwise keep as is
