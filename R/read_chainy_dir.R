@@ -1,3 +1,15 @@
+#' Read data from chainy output
+#'
+#' A function to read chainy output files from a specified directory and format them as needed for input in \code{\link{qpcr_analysis}}.
+#' Note that the file name is used as placeholder for the primers column, which works well if every file contains data for a single target.
+#' Otherwise you will have to edit the data to properly annotate the primers before running the \code{\link{qpcr_analysis}} function.
+#'
+#' @param directory directory where the files to read are located
+#'
+#' @return a data frame with the qPCR data formatted as needed for \code{\link{qpcr_analysis}}
+#' @export
+#'
+#' @examples
 read_chainy_dir <- function(directory = "./chainy_output/") {
   file_list <- list.files(directory)
   print(paste0("Files found: ", file_list))
