@@ -3,7 +3,6 @@
 #' A function for the analysis of qPCR data using the "delta Ct" method.
 #'
 #' @param ct_data a data frame with the qPCR input data. It needs to have the following columns: names, cq, efficiency, primers, included.
-#' @param type type of analysis, either \code{"rtqpcr"} or \code{"qchip"}. (NOTE: qchip analysis is not yet implemented)
 #' @param design a data frame containing the experimental design, at least one expected column called "sample_name" which has to match
 #' the sample names in \code{ct_data} and additional columns for each experimental condition relevant in the design.
 #' @param calibsample a character string with the name of the sample to be used as reference for dct calculation. This sample will have an
@@ -21,7 +20,6 @@
 #' @examples
 qpcr_analysis <- function( # MAIN FUNCTION
   ct_data,
-  type = "rtqpcr",
   design,
   calibsample,
   hkg,
