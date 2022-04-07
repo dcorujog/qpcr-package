@@ -1,5 +1,7 @@
 #' Calculate normalization factor
 #'
+#' Calculate a normalization factor for each sample using the average of the dct values of all genes used for normalization.
+#'
 #' @param dct_data data.frame containing the qPCR data including dCt values as calculated by \code{\link{dct_apply}}
 #' @param hkg a character vector containing the names of the targets used as normalization genes
 #' @param exp_name experiment name (used as plot title and to name the saved file)
