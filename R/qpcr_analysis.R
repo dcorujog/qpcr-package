@@ -19,15 +19,15 @@
 #'
 #' @examples
 qpcr_analysis <- function( # MAIN FUNCTION
-  ct_data, # Data frame, expected columns: names, cq, efficiency, primers, included
-  type = "rtqpcr", # Analysis type, rtqpcr or qchip
-  design, # Design matrix, at least one expected column "sample_name" and additional columns for each exp condition, for chip at least one has to be named IP
-  calibsample, # String, name of the reference sample for dct calculation, will be 1 for all genes and the rest of the samples will be relative to it
-  hkg, # Character vector with the "housekeeping" genes for normalization
-  exp_name, # String, experiment name, will be used for naming saved files
-  fix_names = FALSE, # Logical, fix names from chainy output if TRUE
-  exclude = FALSE, # Logical, exclude samples with included = FALSE
-  save_csv = TRUE # Logical save a csv file with the normalized data
+  ct_data,
+  type = "rtqpcr",
+  design,
+  calibsample,
+  hkg,
+  exp_name,
+  fix_names = FALSE,
+  exclude = FALSE,
+  save_csv = TRUE
 ) {
 
   # Fix names if ncessary (chainy output), otherwise keep as is
