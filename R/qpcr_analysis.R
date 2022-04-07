@@ -55,33 +55,30 @@ qpcr_analysis <- function( # MAIN FUNCTION
   eff <- aggregate(ct_avg$effaverage, by = ct_avg["primers"], FUN = median, na.rm = T)
   names(eff)[2] <- "efficiency"
 
-  if (type == "rtqpcr") {
+  # Calculate dct for the data
 
-    # Calculate dct for the data
+  dct_data <- dct_apply(ct_avg, calibsample, eff)
 
-    dct_data <- dct_apply(ct_avg, calibsample, eff)
+  # Normalization factor calculation
 
-    # Normalization factor calculation
+  norm_factor <- norm_factor_fun(dct_data, hkg, exp_name)
 
-    norm_factor <- norm_factor_fun(dct_data, hkg, exp_name)
+  # Normalize dct values
 
-    # Normalize dct values
+  norm_dct <- apply(dct_data, 1, function(x) as.numeric(x["dct"]) / norm_factor[as.character(x["sample"])])
+  norm_data <- cbind(dct_data, "norm_dct" = norm_dct)
 
-    norm_dct <- apply(dct_data, 1, function(x) as.numeric(x["dct"]) / norm_factor[as.character(x["sample"])])
-    norm_data <- cbind(dct_data, "norm_dct" = norm_dct)
-
-    if(save_csv) {
-      write.csv(norm_data, file = paste0(exp_name, "_norm_data.csv"))
-      write.csv(eff, paste0(exp_name, "_eff.csv"))
-    }
-
-    # Create QC plots
-    if (qc_plots) {
-      ct_sd_plot(norm_data, exp_name = exp_name)
-      ct_avg_plot(norm_data, exp_name = exp_name)
-      eff_avg_plot(norm_data, exp_name = exp_name)
-    }
-
-    return(norm_data)
+  if(save_csv) {
+    write.csv(norm_data, file = paste0(exp_name, "_norm_data.csv"))
+    write.csv(eff, paste0(exp_name, "_eff.csv"))
   }
+
+  # Create QC plots
+  if (qc_plots) {
+    ct_sd_plot(norm_data, exp_name = exp_name)
+    ct_avg_plot(norm_data, exp_name = exp_name)
+    eff_avg_plot(norm_data, exp_name = exp_name)
+  }
+
+  return(norm_data)
 }
