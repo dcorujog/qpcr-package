@@ -13,6 +13,7 @@
 #' @param fix_names logical indicating whether the sample names need to be "fixed" (default = FALSE, only relevant if directly using files generated with chainy to remove well position, dots and asterisks from sample names).
 #' @param exclude logical indicating whether the logical column "exclude" from the input should be used to filter the data frame (default = FALSE).
 #' @param save_csv logical indicating whether to save the final analyzed data frame as a csv file.
+#' @param qc_plots logical indicating whether to generate and save QC plots.
 #'
 #' @return a data frame with the analyzed qPCR data containing normalized dct values.
 #' @export
@@ -27,7 +28,8 @@ qpcr_analysis <- function( # MAIN FUNCTION
   exp_name,
   fix_names = FALSE,
   exclude = FALSE,
-  save_csv = TRUE
+  save_csv = TRUE,
+  qc_plots = TRUE
 ) {
 
   # Fix names if ncessary (chainy output), otherwise keep as is
@@ -77,9 +79,11 @@ qpcr_analysis <- function( # MAIN FUNCTION
     }
 
     # Create QC plots
-    ct_sd_plot(norm_data, exp_name = exp_name)
-    ct_avg_plot(norm_data, exp_name = exp_name)
-    eff_avg_plot(norm_data, exp_name = exp_name)
+    if (qc_plots) {
+      ct_sd_plot(norm_data, exp_name = exp_name)
+      ct_avg_plot(norm_data, exp_name = exp_name)
+      eff_avg_plot(norm_data, exp_name = exp_name)
+    }
 
     return(norm_data)
   }
