@@ -24,7 +24,7 @@ qpcr_analysis <- function( # MAIN FUNCTION
   design,
   calibsample,
   hkg,
-  exp_name,
+  exp_name = "Experiment",
   fix_names = FALSE,
   exclude = FALSE,
   save_csv = TRUE,
