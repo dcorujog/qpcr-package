@@ -32,10 +32,9 @@ norm_factor_fun <- function(dct_data, hkg, exp_name) { # calculate normalization
       geom_text(hjust = 0, nudge_x = 0.05) +
       labs(x = names(hkg_centered)[1],
            y = names(hkg_centered)[2])
-
-    ggsave(filename = paste0(exp_name, "_hkg_scatter.pdf"),
-           plot = hkg_plot,
-           device = cairo_pdf)
+    pdf(paste0(exp_name, "_hkg_scatter_plot.pdf"))
+    print(hkg_plot)
+    dev.off()
   }
 
   norm_factor
