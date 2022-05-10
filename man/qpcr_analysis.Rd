@@ -9,11 +9,12 @@ qpcr_analysis(
   design,
   calibsample,
   hkg,
-  exp_name,
+  exp_name = "Experiment",
   fix_names = FALSE,
   exclude = FALSE,
   save_csv = TRUE,
-  qc_plots = TRUE
+  qc_plots = TRUE,
+  out_dir = getwd()
 )
 }
 \arguments{
@@ -36,6 +37,8 @@ expression value of 1 for all targets and the rest of the samples will have valu
 \item{save_csv}{logical indicating whether to save the final analyzed data frame as a csv file.}
 
 \item{qc_plots}{logical indicating whether to generate and save QC plots.}
+
+\item{out_dir}{directory for saving all results and plots (default = working directory)}
 }
 \value{
 a data frame with the analyzed qPCR data containing normalized dct values.
