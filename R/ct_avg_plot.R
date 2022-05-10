@@ -5,7 +5,7 @@
 #' @param exp_name experiment name (used as plot title and to name the saved file)
 #'
 #' @import ggplot2
-#' @import viridis
+#' @import viridisLite
 #'
 #' @return a pdf file is saved with the corresponding plot
 #' @export
