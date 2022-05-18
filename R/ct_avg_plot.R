@@ -17,7 +17,5 @@ ct_avg_plot <- function(norm_data, max_ct = 35, exp_name = "exp_name") {
     geom_hline(yintercept = max_ct, color = "red") +
     scale_color_viridis(option = "turbo", discrete = TRUE) +
     theme(axis.text.x = element_text(angle = 45, hjust = 1))
-  pdf(paste0(exp_name, "_ct_avg_plot.pdf"))
-  print(ctavg)
-  dev.off()
+  return(ctavg)
 }

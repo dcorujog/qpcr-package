@@ -73,12 +73,16 @@ qpcr_analysis <- function( # MAIN FUNCTION
     write.csv(eff, paste0(exp_name, "_eff.csv"))
   }
 
-  # Create QC plots
+  # Create QC plots and return results
   if (qc_plots) {
-    ct_sd_plot(norm_data, exp_name = exp_name)
-    ct_avg_plot(norm_data, exp_name = exp_name)
-    eff_avg_plot(norm_data, exp_name = exp_name)
+    qc_ctsd <- ct_sd_plot(norm_data, exp_name = exp_name)
+    qc_ctavg <- ct_avg_plot(norm_data, exp_name = exp_name)
+    qc_effavg <- eff_avg_plot(norm_data, exp_name = exp_name)
+    return(list("norm_data" = norm_data,
+                "qc_ctsd" = qc_ctsd,
+                "qc_ctavg" = qc_ctavg,
+                "qc_effavg" = qc_effavg))
+  } else {
+    return(norm_data)
   }
-
-  return(norm_data)
 }
