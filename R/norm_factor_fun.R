@@ -20,22 +20,5 @@ norm_factor_fun <- function(dct_data, hkg, exp_name) { # calculate normalization
   colnames(hkg_centered) <- hkg
   rownames(hkg_centered) <- unique(hkg_data$sample)
   norm_factor <- apply(hkg_centered, 1, mean, na.rm = T)
-
-  if (length(hkg) > 1) { # Skip if using only one normalization gene
-  # Scatter plot of HK gene expression values
-    hkg_centered <- as.data.frame(hkg_centered)
-    hkg_plot <- ggplot(hkg_centered, aes(x = get(hkg[1]), y = get(hkg[2]), label = rownames(hkg_centered))) +
-      coord_cartesian(xlim = c(min(hkg_centered), max(hkg_centered)),
-                      ylim = c(min(hkg_centered), max(hkg_centered))) +
-      geom_abline(slope = 1, intercept = 0, color = "darkblue") +
-      geom_point() +
-      geom_text(hjust = 0, nudge_x = 0.05) +
-      labs(x = names(hkg_centered)[1],
-           y = names(hkg_centered)[2])
-    pdf(paste0(exp_name, "_hkg_scatter_plot.pdf"))
-    print(hkg_plot)
-    dev.off()
-  }
-
   norm_factor
 }

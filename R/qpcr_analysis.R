@@ -78,10 +78,12 @@ qpcr_analysis <- function( # MAIN FUNCTION
     qc_ctsd <- ct_sd_plot(norm_data, exp_name = exp_name)
     qc_ctavg <- ct_avg_plot(norm_data, exp_name = exp_name)
     qc_effavg <- eff_avg_plot(norm_data, exp_name = exp_name)
+    qc_hkgscatter <- hkg_scatter(dct_data, hkg = hkg, exp_name = exp_name)
     return(list("norm_data" = norm_data,
                 "qc_ctsd" = qc_ctsd,
                 "qc_ctavg" = qc_ctavg,
-                "qc_effavg" = qc_effavg))
+                "qc_effavg" = qc_effavg,
+                "qc_hkgscatter" = qc_hkgscatter))
   } else {
     return(norm_data)
   }
