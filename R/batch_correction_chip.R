@@ -1,3 +1,13 @@
+#' Batch correction
+#'
+#' @param data
+#' @param reference
+#' @param value
+#'
+#' @return
+#' @export
+#'
+#' @examples
 batch_correction_chip <- function(data, reference, value) {
   # Expects the following columns in the data:
   # "group" with your unique experimental groups
