@@ -6,6 +6,7 @@
 #'
 #' @return A character vector of fixed sample names
 #'
+#' @export
 fix_names <- function(x) { # fix names from chainy output (remove plate well coordinates)
   name <- as.character(x)
   index <- unlist(gregexpr("..", x, fixed = T)) + 2
