@@ -4,7 +4,7 @@
 \alias{hkg_scatter}
 \title{Scatterplot of normalization genes}
 \usage{
-hkg_scatter(dct_data, hkg)
+hkg_scatter(dct_data, hkg, exp_name)
 }
 \arguments{
 \item{hkg}{}
