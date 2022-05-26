@@ -28,6 +28,6 @@ hkg_scatter <- function(dct_data, hkg, exp_name) {
       labs(x = names(hkg_centered)[1],
            y = names(hkg_centered)[2],
            title = exp_name)
+    return(hkg_plot)
   }
-  return(hkg_plot)
 }
