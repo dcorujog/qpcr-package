@@ -1,8 +1,8 @@
 ---
-title: "vignette"
+title: "qpcr-package"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{vignette}
+  %\VignetteIndexEntry{qpcr-package}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -16,4 +16,110 @@ knitr::opts_chunk$set(
 
 ```{r setup}
 library(qpcrpackage)
+```
+
+## Motivation
+
+Real-time quantitative-PCR (qPCR) has been a staple technique of molecular biology and is widely used for gene expression analysis, genotyping and diagnostics, among other applications. Despite this wide usage in biology, analysis tools and methods are not well standardized. In my experience, most researchers using this technique rely on proprietary software from the manufacturers of qPCR thermocyclers or Excel-based analysis templates. In my own work, I have been using qPCR extensively for the relative quantification of mRNA expression and got frustrated by the limitations of proprietary software and the slowness and error-prone excel workflow. Different R packages have been developed and published that address this issue, however I started writing my own code snippets to process, analyze and plot qPCR data as a personal project and to be able to adjust the complexity of the analysis to my needs. With time, this project has evolved to a package that provides a streamlined and quite simplified analysis of qPCR data for relative quantification from Cq values taking into account primer efficiency. Although it lacks advanced functions and mathematical modeling included in other analysis packages, I hope that this approach can cater and be useful for many users or be used in combination with other methods.
+
+## Disclaimer
+
+This package is a work in progress stemming from a few functions written for my own use and at the moment does not incorporate error handling. It does include documentation for all functions which together with this vignette I hope will be sufficient for you to use it. I plan to expand and improve the functionality of this package over time, if you encounter issues you can post them in the github page issue tracker or send me an email at dcorujo@carrerasresearch.org. 
+
+## What this package does
+
+In short, this package implements an analysis for the relative quantification of gene expression of a target gene in a sample, in relation to a "calibrator" or "control" sample and normalized by one or more reference genes. This is achieved by a variation of the so-called "double delta Ct" or "delta-delta Ct" method that takes into account the efficiency of each primer pair used and possibly multiple reference genes (Pffafl, 2004): 
+
+$\text{Relative expression} = \frac{Eff_{target}^{(Cq_{target,control} - Cq_{target,sample)}}}{Eff_{reference}^{(Cq_{reference, control} - Cq_{reference, control})}}$
+
+In case of using multiple reference genes (which is strongly recommended), the average "delta Ct" of all reference genes is used for normalization in the denominator term.
+
+In summary, this results in the relative expression quantified as a proportion to a single experimental sample which is defined as "control" and that serves as a "calibrator". This means that the control sample will have an expression value of 1 for all tested genes and all other samples will have values expressing multiples or fractions of the expression on the control sample. For example, a sample with value 3 for a gene signifies that expression is three times higher than in the control, a value of 0.2 signifies five times less than the control, and so on.
+
+Although this strategy has been devised to analyze gene expression data, it can be used for any context in which the "quantity" of a target is evaluated as a relative amount to a control sample and normalized by an internal reference. For example, we have also used this method for the relative quantification of mitochondrial DNA content normalized by the genomic DNA signal (Guberovic *et al.*, 2021).
+
+## Quick start
+
+### Data input format
+
+Sample data is included in the package as an example dataset to demonstrate the basic functionality. It contains two objects, the qPCR Cq data (`qpcr_data`) and a table with the experimental design (`design_table`). Note that the design table is optional for the analysis.
+
+```{r}
+data("qpcr_sample")
+head(qpcr_data)
+```
+
+The qPCR data has to be formatted as a data frame in a "tidy" or "long" structure, that is, with every row of the data representing an individual observation (a combination of sample and primer pair, effectively a single reaction well of the plate). In particular, it **needs** to have the following columns:
+
+* **names**: name of the sample. **Note** that rows of the data with the **same sample name** will be interpreted as **technical replicates**, which means that their Cq values will be averaged.
+
+* **cq**: Cq values.
+
+* **efficiency**: efficiency value for the reaction. If you have used a method to extract individual efficiency values for every well, the median value per primer will be used. If you have calculated the efficiency of each primer pair using a standard curve, you can use the same efficiency value for all rows of the data that correspond to the same primer pair. If you have not evaluated the efficiency of the reactions, which is **strongly discouraged**, you can use an assumption of 2 (100% efficiency) for all reactions.
+
+* **primers**: name of the primers used (typically genes).
+
+* **included**: a logical value indicating whether that row will be considered in the analysis (TRUE) or not (FALSE). This can be used to exclude negative controls, failed technical replicates or whichever other filter criteria you want to apply without removing the rows from the data table.
+
+In the sample data, 11 different genes (named with  letters A to K) have been tested and every reaction has been run in technical duplicates. We can have a look at the experimental design table to understand the characteristics of the samples:
+
+```{r}
+head(design_table)
+```
+
+The design table is a data frame containing the summary of the experimental design. At least one column called "sample_name" is expected which has to match the sample names in the qPCR data. Additional columns for each experimental condition relevant in the design can be included.
+
+In the sample data, the experiment has been performed on two different cell lines, one control (`CTL`) and one with a knock-down of a protein of interest (`KD`). Each cell line has been left untreated (`unt`) or received a treatment (`treated`). In addition, the experiment has been performed in three replicates (`rep1, rep2, rep3`)
+
+### Running the analysis
+
+With the data formatted in the appropriate way, we can proceed to the analysis which is performed by the function `qpcr_analysis()`. The basic usage requires a data frame with the qPCR data formatted as described earlier, an optional design table, the name of the "calibrator" or "reference" sample and the names of the primers corresponding to the normalization "housekeeping" genes. We can also specify an experiment name to customize the names of all generated files and plots. You can check a description of these and additional arguments running `?qpcr_analysis`. The function returns a list which we store in this example as `qpcr_result`. This list includes a data frame with the analyzed data (``norm_data``) and, by default, a series of QC plots (``qc_ctavg, qc_ctsd and qc_effavg``).  By default, a .csv file is also saved at the working directory with the analyzed data.
+
+```{r}
+qpcr_result <- qpcr_analysis(ct_data = qpcr_data,
+                              design = design_table,
+                              calibsample = "CTL_unt_rep1",
+                              hkg = c("A", "B"),
+                              exp_name = "sample_experiment")
+
+head(qpcr_result$norm_data)
+```
+
+In the results data frame, all the technical replicates are averaged so only there is only one row per sample-primer combination. The average efficiency and Ct, as well as the standard deviation of the Ct values are reported. The `dct` column contains the delta Ct calculated in reference to the sample specified as calibrator. The `norm_dct` column contains the delta Ct values normalized by the delta Ct of the primers specified as normalization genes (effectively applying the equation described at the beginning of this vignette). Generally, the normalized dCt value will be the relative expression value that will be used for plotting and statistical analysis.
+
+### Quality control
+
+In addition to returning a data frame with the analysis results, a few plots aimed to help in evaluating the technical quality of the experiment are generated. Below, a short description of each of them and what they represent:
+
+#### Average Ct (qc_ctavg)
+
+This plot displays the average Ct value of every sample for each primer pair. The size of the point is proportional to the standard deviation of the technical replicates of that sample. A red line indicates de maximum Ct considered to be adequate for the quantitative range (35 by default). This plot can serve to quickly glance at the "signal strentgh" of every target as judged directly by the Ct values and evaluate if samples have very late Cts and fall outside of the quantitative range of the reaction.
+
+```{r fig.dim=c(5,5)}
+qpcr_result$qc_ctavg
+```
+
+
+In the example dataset, almost all of the samples fall into the specified range (Ct > 35). The two genes with the lowest Ct values (A and B) are the genes used for normalization, which are typically highly expressed in all cell types. 
+
+#### Average efficiency (qc_ctsd)
+
+This plots displays, for every sample, the standard deviation of the Ct values of the exprimental replicates in the Y axis and the mean Ct value in the X axis. Red lines indicate the maximum standard deviation tolerated (0.3535534 by default, corresponding to 0.5 Ct difference among two replicates) and the maximum acceptable Ct (35 by default). This plot can aid in identifying targets that contain bad technical replicates.
+
+```{r, fig.dim=c(5,5)}
+qpcr_result$qc_ctsd
+```
+
+In the example datasets, almost all of the samples are below the standard deviation treshold, indicating that technical replicates are adequate. As we approach the threshold of 35 Cts, standard deviation tends to increase and it is very usual to see some samples with worse replicates, which is even more accentuated after 35 cycles.
+
+#### Average efficiency (qc_effavg)
+
+```{r, fig.dim=c(5,5)}
+qpcr_result$qc_effavg
+```
+
+#### Normalization genes scatterplot (qc_hkgscatter)
+
+```{r, fig.dim=c(5,5)}
+qpcr_result$qc_hkgscatter
 ```
