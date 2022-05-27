@@ -6,7 +6,6 @@ To easily intall this package, run:
 
 ````
 install.packages("devtools")
-library("devtools")
-install_github("dcorujo/qpcr-package")
+devtools::install_github("dcorujo/qpcr-package", build_vignettes = TRUE)
 library("qpcrpackage")
 ````
