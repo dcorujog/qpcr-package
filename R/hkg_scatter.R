@@ -21,7 +21,8 @@ hkg_scatter <- function(dct_data, hkg, exp_name) {
   if (length(hkg) > 1) { # Skip if using only one normalization gene
     hkg_plot <- ggplot(hkg_centered, aes(x = get(hkg[1]), y = get(hkg[2]), label = rownames(hkg_centered))) +
       coord_cartesian(xlim = c(min(hkg_centered), max(hkg_centered)),
-                      ylim = c(min(hkg_centered), max(hkg_centered))) +
+                      ylim = c(min(hkg_centered), max(hkg_centered)),
+                      clip = "off") +
       geom_abline(slope = 1, intercept = 0, color = "darkblue") +
       geom_point() +
       geom_text(hjust = 0, nudge_x = 0.05) +
