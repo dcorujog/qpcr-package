@@ -77,10 +77,11 @@ With the data formatted in the appropriate way, we can proceed to the analysis w
 
 ```{r}
 qpcr_result <- qpcr_analysis(ct_data = qpcr_data,
-                              design = design_table,
-                              calibsample = "CTL_unt_rep1",
-                              hkg = c("A", "B"),
-                              exp_name = "sample_experiment")
+                             design = design_table,
+                             calibsample = "CTL_unt_rep1",
+                             hkg = c("A", "B"),
+                             exp_name = "sample_experiment",
+                             save_csv = FALSE)
 
 head(qpcr_result$norm_data)
 ```
@@ -93,33 +94,43 @@ In addition to returning a data frame with the analysis results, a few plots aim
 
 #### Average Ct (qc_ctavg)
 
-This plot displays the average Ct value of every sample for each primer pair. The size of the point is proportional to the standard deviation of the technical replicates of that sample. A red line indicates de maximum Ct considered to be adequate for the quantitative range (35 by default). This plot can serve to quickly glance at the "signal strentgh" of every target as judged directly by the Ct values and evaluate if samples have very late Cts and fall outside of the quantitative range of the reaction.
+This plot displays the average Ct value of every sample for each primer pair. The size of the point is proportional to the standard deviation of the technical replicates of that sample. A red line indicates the maximum Ct considered to be adequate for the quantitative range (35 by default). This plot can serve to quickly glance at the "signal strength" of every target as judged directly by the Ct values and evaluate if samples have very late Cts and fall outside of the quantitative range of the reaction.
 
 ```{r fig.dim=c(5,5)}
 qpcr_result$qc_ctavg
 ```
 
 
-In the example dataset, almost all of the samples fall into the specified range (Ct > 35). The two genes with the lowest Ct values (A and B) are the genes used for normalization, which are typically highly expressed in all cell types. 
+In the example dataset, almost all of the samples fall into the specified range (Ct < 35). The two genes with the lowest Ct values (A and B) are the genes used for normalization, which are typically highly expressed in all cell types. 
 
 #### Average efficiency (qc_ctsd)
 
-This plots displays, for every sample, the standard deviation of the Ct values of the exprimental replicates in the Y axis and the mean Ct value in the X axis. Red lines indicate the maximum standard deviation tolerated (0.3535534 by default, corresponding to 0.5 Ct difference among two replicates) and the maximum acceptable Ct (35 by default). This plot can aid in identifying targets that contain bad technical replicates.
+This plots displays, for every sample, the standard deviation of the Ct values of the experimental replicates in the Y axis and the mean Ct value in the X axis. Red lines indicate the maximum standard deviation tolerated (0.3535534 by default, corresponding to 0.5 Ct difference among two replicates) and the maximum acceptable Ct (35 by default). This plot can aid in identifying targets that contain bad technical replicates.
 
 ```{r, fig.dim=c(5,5)}
 qpcr_result$qc_ctsd
 ```
 
-In the example datasets, almost all of the samples are below the standard deviation treshold, indicating that technical replicates are adequate. As we approach the threshold of 35 Cts, standard deviation tends to increase and it is very usual to see some samples with worse replicates, which is even more accentuated after 35 cycles.
+In the example dataset, almost all of the samples are below the standard deviation treshold, indicating that technical replicates are adequate. As we approach the threshold of 35 Cts, standard deviation tends to increase and it is very usual to see some samples with worse replicates, which is even more accentuated after 35 cycles.
 
 #### Average efficiency (qc_effavg)
+
+This plot displays the average efficiency of every sample. Red lines indicate the upper and lower limits considered acceptable (1.8 and 2 by default).
 
 ```{r, fig.dim=c(5,5)}
 qpcr_result$qc_effavg
 ```
 
+In the example datasets, most samples fall inside the adequate efficiency range. A few samples have values slightly higher than 2 for targets E and I, which can sometimes indicate inhibition of the reaction. In fact, these two targets have a low signal in the experiment as we have observed in the `qc_ctavg` plot.
+
 #### Normalization genes scatterplot (qc_hkgscatter)
+
+This plot is aimed at judging the correlation between the signal of two different genes used for normalization. The relative expression of two normalization genes for every sample is represented as a scatterplot. A line at x = y is plotted to aid in intepreting the correlation and each point is labelled with the name of the sample.
 
 ```{r, fig.dim=c(5,5)}
 qpcr_result$qc_hkgscatter
 ```
+
+The signal obtained from the normalization gene targets is expected to represent exclusively a relative quantification of the material input in the PCR reaction and not be associated with experimental manipulations. Hence, we expect that when using multiple normalization genes their relative expression values should be highly correlated. That is, if one of the samples has a higher concentration of total template, it should give higher signals for all the normalization genes. A strong deviation from correlated values may indicate that the normalization genes are not suitable for the experiment. Importantly, if samples subject to the same experimental conditions tend to deviate (for example, all the "treated" samples fall outside of the line), it may point to the normalization genes being affected by the experimental conditions, and other normalization genes should be used instead.
+
+In the example dataset the points of this plot fall under an acceptable correlation and no apparent patterns can be identified that match experimental conditions. 
