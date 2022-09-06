@@ -9,9 +9,6 @@ hkg_scatter(dct_data, hkg, exp_name)
 \arguments{
 \item{hkg}{}
 }
-\value{
-
-}
 \description{
 Scatterplot of normalization genes
 }

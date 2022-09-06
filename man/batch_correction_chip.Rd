@@ -9,9 +9,6 @@ batch_correction_chip(data, reference, value)
 \arguments{
 \item{value}{}
 }
-\value{
-
-}
 \description{
 Batch correction
 }
