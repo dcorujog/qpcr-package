@@ -24,11 +24,19 @@ cq_eff <- function(qpcr_raw, type = "Cy0") {
                          plot = FALSE,
                          type = type)
 
+  cq_eff_tab <- as.data.frame(cq_eff_tab)
   rownames(cq_eff_tab) <- cq_eff_tab$Vars
-  cq_eff_tab <- as.data.frame(t(cq_eff_tab[, -1]))
-  cq_eff_tab <- data.frame(names = rownames(cq_eff_tab),
-                           efficiency = cq_eff_tab$sig.eff,
-                           cq = cq_eff_tab[, paste0("sig.", type)])
+  cq_eff_tab <- cq_eff_tab[,-1]
 
-  return(cq_eff_tab)
+  cq_eff_tab <- clean_spawning_dataframe(cq_eff_tab)
+
+  names <- colnames(cq_eff_tab)
+  eff <- as.numeric(unlist(cq_eff_tab["sig.eff",]))
+  cq <- as.numeric(unlist(cq_eff_tab["sig.Cy0",]))
+
+  df <- data.frame(names = names,
+                   cq = cq,
+                   efficiency = eff)
+
+  return(df)
 }
