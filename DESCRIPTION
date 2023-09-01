@@ -15,7 +15,8 @@ Suggests:
     knitr,
     rmarkdown
 VignetteBuilder: knitr
-Depends: qpcR
 Imports:
   ggplot2,
-  viridis
+  viridis,
+  qpcR,
+  XML
